@@ -14,20 +14,22 @@ function App(){
 // Добавление объуктов в массив images
 
 useEffect(() => {
-   getImages()
+   getImages();
 },[searchQuery]);
 
 
-const getImages = () => {
+function getImages(){
 
    if(!searchQuery){
       return
    }
 
-   imagesApi(page,searchQuery)
+   setLoading(true)
+
+    imagesApi(page,searchQuery)
    .then(result => {
       setImages(state => [...state,...result.hits])
-      setPage(state => state += 1)
+      setPage(state => state + 1)
    })
    .catch(error => setError(error))
    .finally(setLoading(false))
@@ -40,6 +42,9 @@ const getImages = () => {
 
    const handleFpormSubmit = query => {
       setSearchQuery(query);
+
+      setPage(1);
+      setImages([]);
    }
 
 
@@ -51,7 +56,7 @@ const getImages = () => {
          <Searcbar onSubmit={handleFpormSubmit}/>
          {images.length > 0 && 
          <GalleryList images={images}/>}
-          <button type='button' className='Button' 
+         {images.length > 0 && <button type='button' className='Button' 
                 onClick={getImages}>{loading ? '...' : 'Load more'}</button>}
         </Fragment>
         
